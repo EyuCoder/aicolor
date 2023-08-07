@@ -48,6 +48,7 @@ const App = (props: Props) => {
     if (res.status == 200) {
       console.log(generatedImg);
       setGeneratedImg(generatedImg);
+      // deleteImage();
     } else {
       console.log('status', res.status, 'error', generatedImg);
     }
@@ -59,18 +60,31 @@ const App = (props: Props) => {
     e.preventDefault();
     if (!file) return;
 
-    const fileName = `${Date.now()}-${file.name}`;
+    const fileName: string = Date.now() + '_' + file.name;
 
     const { data, error } = await supabase.storage
       .from('ai_colorize_bucket')
       .upload(fileName, file);
-    if (error) {
-      console.log(error);
-    } else {
+    if (data) {
       console.log(data);
-      setUploadedImgName(data.path || '');
-      getImageUrl(uploadedImgName);
+      setUploadedImgName(data.path);
+      getImageUrl(data.path);
+    } else {
+      console.log(error);
     }
+  };
+
+  const deleteImage = async () => {
+    if (!uploadedImgName) return;
+    supabase.storage
+      .from('ai_colorize_bucket')
+      .remove([uploadedImgName])
+      .then(() => {
+        console.log('Image deleted successfully');
+      })
+      .catch((error) => {
+        console.error('Error deleting image:', error);
+      });
   };
 
   const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +101,7 @@ const App = (props: Props) => {
       </form>
       <button onClick={colorizePhoto}>getColorized</button>
       {loading && <p>Loading...</p>}
-      <div className='flex'>
+      <div className='flex flex-wrap'>
         {uploadedImgUrl && <img src={uploadedImgUrl} alt='' />}
         {generatedImg && <img src={generatedImg} alt='' />}
       </div>
