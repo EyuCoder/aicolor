@@ -6,6 +6,33 @@ type Props = {};
 
 const App = (props: Props) => {
   const [file, setFile] = useState<File | null>(null);
+  const [colorPhoto, setColorPhoto] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const colorizePhoto = async () => {
+    setLoading(true);
+
+    const res = await fetch('/colorize', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        imageUrl:
+          'https://lnbztldpattfenkpexex.supabase.co/storage/v1/object/public/ai_colorize_bucket/photo_2023-08-06_13-04-35.jpg',
+      }),
+    });
+
+    let generatedImg = await res.json();
+    if (res.status == 200) {
+      console.log(generatedImg);
+      setColorPhoto(generatedImg);
+    } else {
+      console.log('status', res.status, 'error', generatedImg);
+    }
+
+    setLoading(false);
+  };
 
   const onUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,6 +60,9 @@ const App = (props: Props) => {
         <input type='file' onChange={handleFile} />
         <button type='submit'>Upload</button>
       </form>
+      <button onClick={colorizePhoto}>getColorized</button>
+      {loading && <p>Loading...</p>}
+      {colorPhoto && <img src={colorPhoto} alt='' />}
     </div>
   );
 };

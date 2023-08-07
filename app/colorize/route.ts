@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   const { imageUrl } = await request.json();
+  console.log('got img', imageUrl);
 
   let response = await fetch(`${process.env.REPLICATE_BASE_URL}`, {
     method: 'POST',
@@ -19,5 +20,34 @@ export async function POST(request: Request) {
   });
 
   let data = await response.json();
-  return NextResponse.json(data.urls.get);
+  let endpointUrl = data.urls.get;
+
+  let generatedImage: string | null = null;
+  while (!generatedImage) {
+    console.log('polling for result...');
+
+    let finalResponse = await fetch(endpointUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Token ' + process.env.REPLICATE_API_TOKEN,
+      },
+    });
+
+    let generationStatus = await finalResponse.json();
+
+    if (generationStatus.status === 'succeeded') {
+      generatedImage = generationStatus.output;
+    } else if (generationStatus.status === 'failed') {
+      return NextResponse.json('Failed colorizing the image', { status: 500 });
+    } else {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  }
+
+  console.log('restored image: ', generatedImage);
+  return NextResponse.json(
+    generatedImage ? generatedImage : 'Failed colorizing the image',
+    { status: generatedImage ? 500 : 500 }
+  );
 }
