@@ -1,6 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import supabase from '@/lib/supabase';
 import { useState } from 'react';
+import { saveAs } from 'file-saver';
 
 type Props = {};
 
@@ -10,6 +12,10 @@ const App = (props: Props) => {
   const [uploadedImgName, setUploadedImgName] = useState<string>('');
   const [uploadedImgUrl, setUploadedImgUrl] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+
+  const handleDownload = () => {
+    generatedImg && saveAs(generatedImg, 'colorized.png');
+  };
 
   const getImageUrl = async (imgName: string) => {
     const { data, error } = await supabase.storage
@@ -53,9 +59,11 @@ const App = (props: Props) => {
     e.preventDefault();
     if (!file) return;
 
+    const fileName = `${Date.now()}-${file.name}`;
+
     const { data, error } = await supabase.storage
       .from('ai_colorize_bucket')
-      .upload(file.name, file);
+      .upload(fileName, file);
     if (error) {
       console.log(error);
     } else {
@@ -83,6 +91,13 @@ const App = (props: Props) => {
         {uploadedImgUrl && <img src={uploadedImgUrl} alt='' />}
         {generatedImg && <img src={generatedImg} alt='' />}
       </div>
+      {generatedImg && (
+        <>
+          <button className='border-2 rounded' onClick={handleDownload}>
+            Download Image
+          </button>
+        </>
+      )}
     </div>
   );
 };
