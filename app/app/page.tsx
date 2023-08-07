@@ -3,6 +3,7 @@
 import supabase from '@/lib/supabase';
 import { useState } from 'react';
 import { saveAs } from 'file-saver';
+import AuthForm from '@/components/AuthForm';
 
 type Props = {};
 
@@ -112,6 +113,10 @@ const App = (props: Props) => {
           </button>
         </>
       )}
+
+      <div className='max-w-xs mt-10 col-6 auth-widget'>
+        <AuthForm />
+      </div>
     </div>
   );
 };
