@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   const { imageUrl } = await request.json();
-  console.log('got img', imageUrl);
 
   let response = await fetch(`${process.env.REPLICATE_BASE_URL}`, {
     method: 'POST',
@@ -39,15 +38,15 @@ export async function POST(request: Request) {
     if (generationStatus.status === 'succeeded') {
       generatedImage = generationStatus.output;
     } else if (generationStatus.status === 'failed') {
-      return NextResponse.json('Failed colorizing the image', { status: 500 });
+      break;
     } else {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
 
-  console.log('restored image: ', generatedImage);
+  console.log('generated image: ', generatedImage);
   return NextResponse.json(
     generatedImage ? generatedImage : 'Failed colorizing the image',
-    { status: generatedImage ? 500 : 500 }
+    { status: generatedImage ? 200 : 500 }
   );
 }

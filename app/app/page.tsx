@@ -6,10 +6,26 @@ type Props = {};
 
 const App = (props: Props) => {
   const [file, setFile] = useState<File | null>(null);
-  const [colorPhoto, setColorPhoto] = useState<string>('');
+  const [generatedImg, setGeneratedImg] = useState<string>('');
+  const [uploadedImgName, setUploadedImgName] = useState<string>('');
+  const [uploadedImgUrl, setUploadedImgUrl] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
+  const getImageUrl = async (imgName: string) => {
+    const { data, error } = await supabase.storage
+      .from('ai_colorize_bucket')
+      .createSignedUrl(imgName, 60);
+
+    console.log(data);
+    if (error) {
+      console.log(error);
+    } else {
+      setUploadedImgUrl(data?.signedUrl || '');
+    }
+  };
+
   const colorizePhoto = async () => {
+    if (!uploadedImgUrl) return;
     setLoading(true);
 
     const res = await fetch('/colorize', {
@@ -18,15 +34,14 @@ const App = (props: Props) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        imageUrl:
-          'https://lnbztldpattfenkpexex.supabase.co/storage/v1/object/public/ai_colorize_bucket/photo_2023-08-06_13-04-35.jpg',
+        imageUrl: uploadedImgUrl,
       }),
     });
 
     let generatedImg = await res.json();
     if (res.status == 200) {
       console.log(generatedImg);
-      setColorPhoto(generatedImg);
+      setGeneratedImg(generatedImg);
     } else {
       console.log('status', res.status, 'error', generatedImg);
     }
@@ -45,6 +60,8 @@ const App = (props: Props) => {
       console.log(error);
     } else {
       console.log(data);
+      setUploadedImgName(data.path || '');
+      getImageUrl(uploadedImgName);
     }
   };
 
@@ -62,7 +79,10 @@ const App = (props: Props) => {
       </form>
       <button onClick={colorizePhoto}>getColorized</button>
       {loading && <p>Loading...</p>}
-      {colorPhoto && <img src={colorPhoto} alt='' />}
+      <div className='flex'>
+        {uploadedImgUrl && <img src={uploadedImgUrl} alt='' />}
+        {generatedImg && <img src={generatedImg} alt='' />}
+      </div>
     </div>
   );
 };
