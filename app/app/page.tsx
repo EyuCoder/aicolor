@@ -1,18 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
-import supabase from '@/lib/supabase';
 import { useState } from 'react';
 import { saveAs } from 'file-saver';
-import AuthForm from '@/components/AuthForm';
+import {
+  Session,
+  createClientComponentClient,
+} from '@supabase/auth-helpers-nextjs';
 
 type Props = {};
 
-const App = (props: Props) => {
+const App = ({ session }: { session: Session | null }) => {
+  const supabase = createClientComponentClient();
   const [file, setFile] = useState<File | null>(null);
   const [generatedImg, setGeneratedImg] = useState<string>('');
   const [uploadedImgName, setUploadedImgName] = useState<string>('');
   const [uploadedImgUrl, setUploadedImgUrl] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const user = session?.user;
 
   const handleDownload = () => {
     generatedImg && saveAs(generatedImg, 'colorized.png');
@@ -100,12 +104,16 @@ const App = (props: Props) => {
         <input type='file' onChange={handleFile} />
         <button type='submit'>Upload</button>
       </form>
-      <button onClick={colorizePhoto}>getColorized</button>
+
+      <button onClick={colorizePhoto}>Colorize Photo</button>
+
       {loading && <p>Loading...</p>}
+
       <div className='flex flex-wrap'>
         {uploadedImgUrl && <img src={uploadedImgUrl} alt='' />}
         {generatedImg && <img src={generatedImg} alt='' />}
       </div>
+
       {generatedImg && (
         <>
           <button className='border-2 rounded' onClick={handleDownload}>
@@ -114,9 +122,9 @@ const App = (props: Props) => {
         </>
       )}
 
-      <div className='max-w-xs mt-10 col-6 auth-widget'>
-        <AuthForm />
-      </div>
+      <form action='/auth/signout' method='post'>
+        <button type='submit'>Sign out</button>
+      </form>
     </div>
   );
 };
