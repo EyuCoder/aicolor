@@ -1,11 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import { useState } from 'react';
-import { saveAs } from 'file-saver';
 import {
   Session,
   createClientComponentClient,
 } from '@supabase/auth-helpers-nextjs';
+import { handleDownload } from '@/utils';
 
 type Props = {};
 
@@ -17,10 +17,6 @@ const App = ({ session }: { session: Session | null }) => {
   const [uploadedImgUrl, setUploadedImgUrl] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const user = session?.user;
-
-  const handleDownload = () => {
-    generatedImg && saveAs(generatedImg, 'colorized.png');
-  };
 
   const getImageUrl = async (imgName: string) => {
     const { data, error } = await supabase.storage
@@ -116,7 +112,9 @@ const App = ({ session }: { session: Session | null }) => {
 
       {generatedImg && (
         <>
-          <button className='border-2 rounded' onClick={handleDownload}>
+          <button
+            className='border-2 rounded'
+            onClick={() => handleDownload(generatedImg)}>
             Download Image
           </button>
         </>
