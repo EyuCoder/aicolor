@@ -1,6 +1,5 @@
-import { Card, CardBody } from '@nextui-org/card';
+import { CameraIcon } from '@heroicons/react/24/solid';
 import { Progress } from '@nextui-org/progress';
-import { Divider } from '@nextui-org/react';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 
@@ -26,7 +25,7 @@ const DropZone = ({ uploading, setFile }: Props) => {
 
   const className = `${
     isDragActive && 'border-opacity-40'
-  } border-2 border-gray-300 border-dashed p-10 rounded-lg text-center max-w-xl mx-auto my-10 bg-gray-900`;
+  } border-2 h-40 border-gray-300 border-dashed p-10 rounded-lg text-center max-w-xl mx-auto my-4 bg-gray-700 bg-opacity-30`;
   return (
     <div
       {...getRootProps({
@@ -41,13 +40,16 @@ const DropZone = ({ uploading, setFile }: Props) => {
               size='sm'
               isIndeterminate
               aria-label='Loading...'
-              className='max-w-md'
+              className='max-w-md mt-4'
             />
           </>
         ) : isDragActive && !uploading ? (
           <p>Drop the files here ...</p>
         ) : (
-          <p>Drag and drop a photo here, or click to select photo</p>
+          <div className='flex flex-col items-center justify-center gap-2'>
+            <CameraIcon width={50} height={50} />
+            <p>Drag and drop a photo here, or click to select photo</p>
+          </div>
         )}
       </div>
     </div>

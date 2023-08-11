@@ -13,7 +13,7 @@ export default function AuthForm() {
       view='magic_link'
       showLinks={false}
       appearance={{ theme: ThemeSupa }}
-      theme='light'
+      theme='dark'
       providers={['google', 'github']}
       socialLayout='horizontal'
     />

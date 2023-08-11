@@ -3,10 +3,13 @@
 import { useState, useEffect } from 'react';
 import { handleDownload } from '@/utils';
 import DropZone from '@/components/DropZone';
-import supabase from '@/lib/supabase';
-import { Button } from '@nextui-org/button';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Button, Image } from '@nextui-org/react';
+import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
+import { CameraIcon } from '@heroicons/react/20/solid';
 
 const App = () => {
+  const supabase = createClientComponentClient();
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [generatedImg, setGeneratedImg] = useState<string>('');
@@ -19,7 +22,6 @@ const App = () => {
       .from('ai_colorize_bucket')
       .createSignedUrl(imgName, 60);
 
-    console.log(data);
     if (error) {
       console.log(error);
     } else {
@@ -28,6 +30,7 @@ const App = () => {
   };
 
   const colorizePhoto = async () => {
+    console.log(uploadedImgUrl);
     if (!uploadedImgUrl) return;
     setLoading(true);
 
@@ -53,28 +56,6 @@ const App = () => {
     setLoading(false);
   };
 
-  const onUpload = async () => {
-    if (!file) return;
-    setUploading(true);
-
-    const fileName: string = Date.now() + '_' + file.name;
-
-    const { data, error } = await supabase.storage
-      .from('ai_colorize_bucket')
-      .upload(fileName, file)
-      .finally(() => {
-        setUploading(false);
-      });
-
-    if (data) {
-      console.log(data);
-      setUploadedImgName(data.path);
-      //getImageUrl(data.path);
-    } else {
-      console.log(error);
-    }
-  };
-
   const deleteImage = async () => {
     if (!uploadedImgName) return;
     supabase.storage
@@ -95,38 +76,66 @@ const App = () => {
   // };
 
   useEffect(() => {
+    const onUpload = async () => {
+      if (!file) return;
+      setUploading(true);
+      setGeneratedImg('');
+      setUploadedImgUrl('');
+
+      const fileName: string = Date.now() + '_' + file.name;
+
+      const { data, error } = await supabase.storage
+        .from('ai_colorize_bucket')
+        .upload(fileName, file)
+        .finally(() => {
+          setUploading(false);
+        });
+
+      if (data) {
+        console.log(data);
+        setUploadedImgName(data.path);
+        getImageUrl(data.path);
+        setFile(null);
+      } else {
+        console.log(error);
+      }
+    };
     file && onUpload();
-  }, [file]);
+  }, [file, getImageUrl]);
 
   return (
     <div className='container p-10 mx-auto'>
       <DropZone setFile={setFile} uploading={uploading} />
-
-      <button onClick={colorizePhoto}>Colorize Photo</button>
-
-      {loading && <p>Loading...</p>}
-
-      <div className='flex flex-wrap'>
-        {file && (
-          <img
-            src={URL.createObjectURL(file)}
-            className={`${uploading && 'animate-pulse opacity-40'}`}
-            alt=''
-          />
+      <div className='flex flex-wrap justify-center gap-2 mx-auto my-6 '>
+        {uploadedImgUrl && (
+          <div className='flex flex-col items-center gap-4'>
+            <Image width={500} height={400} alt='' src={uploadedImgUrl} />
+            <Button
+              className='w-4/5'
+              color='primary'
+              variant='bordered'
+              onClick={colorizePhoto}
+              isLoading={loading}
+              startContent={<CameraIcon />}>
+              Colorize Photo
+            </Button>
+          </div>
         )}
-        {/* {uploadedImgUrl && <img src={uploadedImgUrl} alt='' />} */}
-        {generatedImg && <img src={generatedImg} alt='' />}
-      </div>
+        {generatedImg && (
+          <div className='flex flex-col items-center gap-4'>
+            <Image width={500} height={400} alt='' src={generatedImg} />
 
-      {generatedImg && (
-        <>
-          <button
-            className='border-2 rounded'
-            onClick={() => handleDownload(generatedImg)}>
-            Download Image
-          </button>
-        </>
-      )}
+            <Button
+              className='w-4/5'
+              color='primary'
+              variant='bordered'
+              onClick={() => handleDownload(generatedImg)}
+              startContent={<FolderArrowDownIcon />}>
+              Download
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
