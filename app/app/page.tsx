@@ -1,22 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import { useState, useEffect } from 'react';
-import { Session } from '@supabase/auth-helpers-nextjs';
 import { handleDownload } from '@/utils';
 import DropZone from '@/components/DropZone';
 import supabase from '@/lib/supabase';
 import { Button } from '@nextui-org/button';
 
-type Props = {};
-
-const App = ({ session }: { session: Session | null }) => {
+const App = () => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [generatedImg, setGeneratedImg] = useState<string>('');
   const [uploadedImgName, setUploadedImgName] = useState<string>('');
   const [uploadedImgUrl, setUploadedImgUrl] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const user = session?.user;
 
   const getImageUrl = async (imgName: string) => {
     const { data, error } = await supabase.storage
@@ -131,10 +127,6 @@ const App = ({ session }: { session: Session | null }) => {
           </button>
         </>
       )}
-
-      <form action='/auth/signout' method='post'>
-        <Button type='submit'>Sign out</Button>
-      </form>
     </div>
   );
 };
