@@ -19,7 +19,7 @@ type Props = { session: Session | null };
 
 const NavBar = ({ session }: Props) => {
   const user = session?.user;
-  console.log(user);
+  // console.log(user);
 
   const formRef = useRef<HTMLFormElement>(null);
 

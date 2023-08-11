@@ -1,3 +1,6 @@
+import { Card, CardBody } from '@nextui-org/card';
+import { Progress } from '@nextui-org/progress';
+import { Divider } from '@nextui-org/react';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 
@@ -21,19 +24,32 @@ const DropZone = ({ uploading, setFile }: Props) => {
     },
   });
 
+  const className = `${
+    isDragActive && 'border-opacity-40'
+  } border-2 border-gray-300 border-dashed p-10 rounded-lg text-center max-w-xl mx-auto my-10 bg-gray-900`;
   return (
     <div
       {...getRootProps({
-        className:
-          'border-2 border-gray-300 border-dashed p-10 rounded text-center w-1/2 mx-auto my-10',
+        className: className,
       })}>
       <input {...getInputProps()} />
-      {isDragActive && !uploading ? (
-        <p>Drop the files here ...</p>
-      ) : (
-        <p>Drag and drop some files here, or click to select files</p>
-      )}
-      {uploading && <p>Uploading...</p>}
+      <div className='text-center'>
+        {uploading ? (
+          <>
+            <p>uploading ...</p>
+            <Progress
+              size='sm'
+              isIndeterminate
+              aria-label='Loading...'
+              className='max-w-md'
+            />
+          </>
+        ) : isDragActive && !uploading ? (
+          <p>Drop the files here ...</p>
+        ) : (
+          <p>Drag and drop a photo here, or click to select photo</p>
+        )}
+      </div>
     </div>
   );
 };
