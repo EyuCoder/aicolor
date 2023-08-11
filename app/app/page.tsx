@@ -1,17 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Session,
   createClientComponentClient,
 } from '@supabase/auth-helpers-nextjs';
 import { handleDownload } from '@/utils';
+import DropZone from '@/components/DropZone';
+import supabase from '@/lib/supabase';
 
 type Props = {};
 
 const App = ({ session }: { session: Session | null }) => {
-  const supabase = createClientComponentClient();
   const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState<boolean>(false);
   const [generatedImg, setGeneratedImg] = useState<string>('');
   const [uploadedImgName, setUploadedImgName] = useState<string>('');
   const [uploadedImgUrl, setUploadedImgUrl] = useState<string>('');
@@ -57,19 +59,23 @@ const App = ({ session }: { session: Session | null }) => {
     setLoading(false);
   };
 
-  const onUpload = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onUpload = async () => {
     if (!file) return;
+    setUploading(true);
 
     const fileName: string = Date.now() + '_' + file.name;
 
     const { data, error } = await supabase.storage
       .from('ai_colorize_bucket')
-      .upload(fileName, file);
+      .upload(fileName, file)
+      .finally(() => {
+        setUploading(false);
+      });
+
     if (data) {
       console.log(data);
       setUploadedImgName(data.path);
-      getImageUrl(data.path);
+      //getImageUrl(data.path);
     } else {
       console.log(error);
     }
@@ -94,19 +100,27 @@ const App = ({ session }: { session: Session | null }) => {
     setFile(event.target.files[0]);
   };
 
+  useEffect(() => {
+    file && onUpload();
+  }, [file]);
+
   return (
     <div className='container p-10 mx-auto'>
-      <form onSubmit={onUpload}>
-        <input type='file' onChange={handleFile} />
-        <button type='submit'>Upload</button>
-      </form>
+      <DropZone setFile={setFile} uploading={uploading} />
 
       <button onClick={colorizePhoto}>Colorize Photo</button>
 
       {loading && <p>Loading...</p>}
 
       <div className='flex flex-wrap'>
-        {uploadedImgUrl && <img src={uploadedImgUrl} alt='' />}
+        {file && (
+          <img
+            src={URL.createObjectURL(file)}
+            className={`${uploading && 'animate-pulse opacity-40'}`}
+            alt=''
+          />
+        )}
+        {/* {uploadedImgUrl && <img src={uploadedImgUrl} alt='' />} */}
         {generatedImg && <img src={generatedImg} alt='' />}
       </div>
 
