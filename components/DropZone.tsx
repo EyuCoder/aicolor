@@ -13,14 +13,13 @@ const DropZone = ({ uploading, setFile }: Props) => {
     console.log(acceptedFiles[0].name);
   }, []);
 
-  const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
-    useDropzone({
-      onDrop,
-      accept: {
-        'image/jpeg': [],
-        'image/png': [],
-      },
-    });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/jpeg': [],
+      'image/png': [],
+    },
+  });
 
   return (
     <div

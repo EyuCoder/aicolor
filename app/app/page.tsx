@@ -1,13 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import { useState, useEffect } from 'react';
-import {
-  Session,
-  createClientComponentClient,
-} from '@supabase/auth-helpers-nextjs';
+import { Session } from '@supabase/auth-helpers-nextjs';
 import { handleDownload } from '@/utils';
 import DropZone from '@/components/DropZone';
 import supabase from '@/lib/supabase';
+import { Button } from '@nextui-org/button';
 
 type Props = {};
 
@@ -94,11 +92,11 @@ const App = ({ session }: { session: Session | null }) => {
       });
   };
 
-  const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.files);
-    if (!event.target.files) return;
-    setFile(event.target.files[0]);
-  };
+  // const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   console.log(event.target.files);
+  //   if (!event.target.files) return;
+  //   setFile(event.target.files[0]);
+  // };
 
   useEffect(() => {
     file && onUpload();
@@ -135,7 +133,7 @@ const App = ({ session }: { session: Session | null }) => {
       )}
 
       <form action='/auth/signout' method='post'>
-        <button type='submit'>Sign out</button>
+        <Button type='submit'>Sign out</Button>
       </form>
     </div>
   );
