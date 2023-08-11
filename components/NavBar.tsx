@@ -33,7 +33,7 @@ const NavBar = ({ session }: Props) => {
     <>
       <Navbar className='py-4'>
         <NavbarBrand>
-          Chroma <p className='font-bold text-inherit'>Cut</p>
+          Chroma <p className='font-bold text-inherit'>AI</p>
         </NavbarBrand>
 
         <NavbarContent as='div' justify='end'>

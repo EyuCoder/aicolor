@@ -20,6 +20,7 @@ const DropZone = ({ uploading, setFile }: Props) => {
     accept: {
       'image/jpeg': [],
       'image/png': [],
+      'image/webp': [],
     },
   });
 
