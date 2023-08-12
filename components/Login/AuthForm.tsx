@@ -4,7 +4,8 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 
 export default function AuthForm() {
-  const callbackUrl = window?.location.host + '/auth/callback';
+  const callbackUrl = location.origin + '/auth/callback';
+  console.log(callbackUrl);
 
   return (
     <div className='mb-6'>
