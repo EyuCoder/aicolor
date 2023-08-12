@@ -4,11 +4,11 @@ import {
   ReactCompareSliderImage,
 } from 'react-compare-slider';
 
-const Hero = () => {
+const CompareSlider = () => {
   return (
     <div className='my-6'>
       <ReactCompareSlider
-        className='h-[30rem] rounded-xl shadow-xl'
+        className='h-[25rem] rounded-xl shadow-xl'
         position={50}
         itemOne={
           <ReactCompareSliderImage
@@ -27,4 +27,4 @@ const Hero = () => {
   );
 };
 
-export default Hero;
+export default CompareSlider;
