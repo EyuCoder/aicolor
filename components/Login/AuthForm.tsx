@@ -9,7 +9,7 @@ export default function AuthForm() {
   return (
     <div className='mb-6'>
       <Auth
-        redirectTo='/auth/callback'
+        redirectTo='https://aicolor.vercel.app/auth/callback'
         supabaseClient={supabase}
         view='magic_link'
         showLinks={false}
