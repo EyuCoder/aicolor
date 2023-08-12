@@ -14,17 +14,14 @@ import {
   useDisclosure,
 } from '@nextui-org/react';
 import { useRef } from 'react';
-import { Session } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import Link from 'next/link';
 import LoginModal from './Login/LoginModal';
 
-type Props = { session: Session | null };
+type Props = { user: User | null };
 
-const NavBar = ({ session }: Props) => {
+const NavBar = ({ user }: Props) => {
   const { onOpen, isOpen, onOpenChange } = useDisclosure();
-  const user = session?.user;
-  // console.log(user);
-
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleLogoutClick = () => {

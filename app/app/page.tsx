@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 import { useState, useEffect } from 'react';
 import { handleDownload } from '@/utils';
