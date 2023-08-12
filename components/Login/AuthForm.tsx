@@ -9,7 +9,7 @@ export default function AuthForm() {
   return (
     <div className='mb-6'>
       <Auth
-        redirectTo='http://localhost:3000/auth/callback'
+        redirectTo='/auth/callback'
         supabaseClient={supabase}
         view='magic_link'
         showLinks={false}
