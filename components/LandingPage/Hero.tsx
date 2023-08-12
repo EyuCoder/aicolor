@@ -24,7 +24,7 @@ const Hero = (props: Props) => {
           onPress={onOpen}
           radius='full'
           className='text-white shadow-lg bg-gradient-to-tr from-pink-500 to-yellow-500'>
-          Start for free
+          Get Started
         </Button>
       </div>
       <LoginModal isOpen={isOpen} onOpenChange={onOpenChange} />

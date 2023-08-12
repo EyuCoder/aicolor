@@ -104,7 +104,7 @@ const App = () => {
   }, [file, getImageUrl]);
 
   return (
-    <div className='container h-full p-10 mx-auto'>
+    <div className='container min-h-[80vh] p-10 mx-auto'>
       <DropZone setFile={setFile} uploading={uploading} />
       <div className='flex flex-wrap justify-center gap-2 mx-auto my-6 '>
         {uploadedImgUrl && (

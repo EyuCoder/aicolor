@@ -6,7 +6,7 @@ import {
 
 const CompareSlider = () => {
   return (
-    <div className='my-6'>
+    <div className='mx-4 my-6 md:mx-0'>
       <ReactCompareSlider
         className='h-[25rem] rounded-xl shadow-xl'
         position={50}
