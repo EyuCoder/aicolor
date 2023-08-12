@@ -4,7 +4,11 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 
 export default function AuthForm() {
-  const callbackUrl = location.origin + '/auth/callback';
+  const host =
+    window.location.origin ||
+    window.location.host ||
+    'https://aicolor.vercel.app';
+  const callbackUrl = host + '/auth/callback';
   console.log(callbackUrl);
 
   return (

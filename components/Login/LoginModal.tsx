@@ -1,17 +1,5 @@
 import React from 'react';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  useDisclosure,
-  Checkbox,
-  Input,
-  Link,
-} from '@nextui-org/react';
-import { type } from 'os';
+import { Modal, ModalContent, ModalHeader, ModalBody } from '@nextui-org/react';
 import AuthForm from './AuthForm';
 
 type Props = {
