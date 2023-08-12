@@ -13,16 +13,32 @@ import {
   link,
   useDisclosure,
 } from '@nextui-org/react';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import Link from 'next/link';
 import LoginModal from './Login/LoginModal';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 type Props = { user: User | null };
 
-const NavBar = ({ user }: Props) => {
+const NavBar = () => {
   const { onOpen, isOpen, onOpenChange } = useDisclosure();
   const formRef = useRef<HTMLFormElement>(null);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    async function getUser() {
+      const supabase = createClientComponentClient();
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.log(error);
+      } else {
+        setUser(data.user ?? null);
+      }
+      console.log(data.user);
+    }
+    getUser();
+  }, []);
 
   const handleLogoutClick = () => {
     if (formRef.current) {
