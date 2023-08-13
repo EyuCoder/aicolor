@@ -13,6 +13,7 @@ Here's a quick video demo of how it works:
   - Auth
   - Auth UI
   - Storage
+  - Database
 - Replicate API
   - AI Model: [ChromaGAN](https://github.com/pvitoria/ChromaGAN)
 - NextUI 2.0 (with TailwindCSS)
