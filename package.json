@@ -1,7 +1,27 @@
 {
-  "name": "ai-colorize",
-  "version": "0.1.0",
+  "name": "aicolor",
+  "version": "1.0.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eyucoder/aicolor"
+  },
+  "author": {
+    "name": "eyucoder",
+    "email": "eyueldaniel0921@gmail.com",
+    "url": "https://github.com/eyucoder"
+  },
+  "keywords": [
+    "gan",
+    "chromagan",
+    "supabase",
+    "nextjs",
+    "tailwindcss",
+    "nextui",
+    "image generation",
+    "ai",
+    "ml"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
