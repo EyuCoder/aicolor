@@ -71,7 +71,7 @@ const App = () => {
 
       if (newCredit <= 0) {
         console.log('no credit');
-        window.alert('You have no credit left');
+        window.alert('You have 0 credit left');
         return;
       }
       if (!file) return;
@@ -93,7 +93,7 @@ const App = () => {
         setUploadedImgName(data.path);
         await supabase.storage
           .from('ai_colorize_bucket')
-          .createSignedUrl(data.path, 60)
+          .createSignedUrl(data.path, 86400)
           .then(({ data }) => {
             console.log(data?.signedUrl);
             setUploadedImgUrl(data?.signedUrl || '');
