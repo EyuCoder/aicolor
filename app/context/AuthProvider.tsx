@@ -1,6 +1,5 @@
 'use client';
 import supabase from '@/lib/supabase';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { User } from '@supabase/supabase-js';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -19,8 +18,6 @@ export const AuthContext = createContext<AuthContextType>({
 export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const supabase = createClientComponentClient();
-
   const [user, setUser] = useState<User | null>(null);
   const [credit, setCredit] = useState<number | null>(null);
 
@@ -59,6 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.error(error);
         return;
       }
+      console.log('credit', data?.credit_left);
 
       setCredit(data?.credit_left || 0);
     };

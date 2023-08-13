@@ -12,9 +12,9 @@ import { CameraIcon } from '@heroicons/react/20/solid';
 import checkCredit from '@/lib/checkCredit';
 import decreaseCreditLeft from '@/lib/updateCredit';
 import { useAuth } from '../context/AuthProvider';
+import supabase from '@/lib/supabase';
 
 const App = () => {
-  const supabase = createClientComponentClient();
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [generatedImg, setGeneratedImg] = useState<string>('');
