@@ -2,10 +2,6 @@
 import { useState, useEffect } from 'react';
 import { handleDownload } from '@/utils';
 import DropZone from '@/components/DropZone';
-import {
-  User,
-  createClientComponentClient,
-} from '@supabase/auth-helpers-nextjs';
 import { Button, Image } from '@nextui-org/react';
 import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
 import { CameraIcon } from '@heroicons/react/20/solid';
@@ -21,7 +17,7 @@ const App = () => {
   const [uploadedImgName, setUploadedImgName] = useState<string>('');
   const [uploadedImgUrl, setUploadedImgUrl] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const { user, credit, setCreditLeft } = useAuth();
+  const { user, setCreditLeft } = useAuth();
 
   const colorizePhoto = async () => {
     console.log(uploadedImgUrl);

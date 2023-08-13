@@ -1,4 +1,3 @@
-import { Code } from '@nextui-org/code';
 import { Link } from '@nextui-org/link';
 
 const Footer = () => {
