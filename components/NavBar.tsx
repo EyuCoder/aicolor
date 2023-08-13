@@ -73,7 +73,7 @@ const NavBar = () => {
                   <p className='font-semibold'>Signed in as</p>
                   <p className='font-semibold'>{user?.email}</p>
                 </DropdownItem>
-                <DropdownItem key='settings'>Buy Credits</DropdownItem>
+                <DropdownItem key='settings'>5 Credits left</DropdownItem>
                 <DropdownItem key='logout' color='danger'>
                   <form ref={formRef} action='/auth/signout' method='post'>
                     <p onClick={handleLogoutClick}>Log Out</p>
