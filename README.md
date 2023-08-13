@@ -1,8 +1,8 @@
 # AI COLOR: colorize photo with AI
 
-If you're looking to colorize old black and white photos, our AI photo colorizer can help you bring your memories to life.
+If you're looking to colorize old black and white photos, this AI photo colorizer app can help you bring your memories back to life.
 
-Here's a demo of how it works:
+Here's a quick video demo of how it works:
 
 [![AiColor Demo](https://img.youtube.com/vi/-QLxlIKS_JA/0.jpg)](https://www.youtube.com/watch?v=-QLxlIKS_JA)
 
