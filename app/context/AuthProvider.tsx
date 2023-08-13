@@ -1,28 +1,33 @@
 'use client';
 import supabase from '@/lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { User } from '@supabase/supabase-js';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-type Credit = {
-  id: string;
-  credit_left: number;
-};
-
 type AuthContextType = {
   user: User | null;
-  credit: Credit | null;
+  credit: number | null;
+  setCreditLeft: (creditLeft: number) => void;
 };
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   credit: null,
+  setCreditLeft: () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const supabase = createClientComponentClient();
+
   const [user, setUser] = useState<User | null>(null);
-  const [credit, setCredit] = useState<Credit | null>(null);
+  const [credit, setCredit] = useState<number | null>(null);
+
+  const setCreditLeft = (creditLeft: number) => {
+    if (!credit) return;
+    setCredit(creditLeft);
+  };
 
   const onAuthStateChange = async () => {
     try {
@@ -30,6 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         data: { user },
       } = await supabase.auth.getUser();
       if (user) {
+        console.log('user', user);
         setUser(user);
       }
     } catch (error) {
@@ -54,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      setCredit((data as Credit) ?? null);
+      setCredit(data?.credit_left || 0);
     };
 
     if (user) {
@@ -63,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   return (
-    <AuthContext.Provider value={{ user, credit }}>
+    <AuthContext.Provider value={{ user, credit, setCreditLeft }}>
       {children}
     </AuthContext.Provider>
   );

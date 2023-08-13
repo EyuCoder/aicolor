@@ -1,5 +1,4 @@
 import supabase from './supabase';
-import decreaseCreditLeft from './updateCredit';
 
 async function checkCredit(uid: string): Promise<number> {
   const { data, error } = await supabase

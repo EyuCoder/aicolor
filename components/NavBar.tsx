@@ -9,36 +9,20 @@ import {
   DropdownMenu,
   Avatar,
   Button,
-  Textarea,
-  link,
   useDisclosure,
 } from '@nextui-org/react';
-import { useEffect, useRef, useState } from 'react';
-import { Session, User } from '@supabase/supabase-js';
+import { useRef } from 'react';
+import { User } from '@supabase/supabase-js';
 import Link from 'next/link';
 import LoginModal from './Login/LoginModal';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useAuth } from '@/app/context/AuthProvider';
 
 type Props = { user: User | null };
 
 const NavBar = () => {
   const { onOpen, isOpen, onOpenChange } = useDisclosure();
   const formRef = useRef<HTMLFormElement>(null);
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    async function getUser() {
-      const supabase = createClientComponentClient();
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        console.log(error);
-      } else {
-        setUser(data.user ?? null);
-      }
-      console.log(data.user);
-    }
-    getUser();
-  }, []);
+  const { user, credit } = useAuth();
 
   const handleLogoutClick = () => {
     if (formRef.current) {
@@ -73,7 +57,7 @@ const NavBar = () => {
                   <p className='font-semibold'>Signed in as</p>
                   <p className='font-semibold'>{user?.email}</p>
                 </DropdownItem>
-                <DropdownItem key='credits'>5 Credits left</DropdownItem>
+                <DropdownItem key='credits'>{credit} Credits left</DropdownItem>
                 <DropdownItem key='logout' color='danger'>
                   <form ref={formRef} action='/auth/signout' method='post'>
                     <p onClick={handleLogoutClick}>Log Out</p>

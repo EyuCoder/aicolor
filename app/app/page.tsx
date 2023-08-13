@@ -11,6 +11,7 @@ import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
 import { CameraIcon } from '@heroicons/react/20/solid';
 import checkCredit from '@/lib/checkCredit';
 import decreaseCreditLeft from '@/lib/updateCredit';
+import { useAuth } from '../context/AuthProvider';
 
 const App = () => {
   const supabase = createClientComponentClient();
@@ -20,37 +21,7 @@ const App = () => {
   const [uploadedImgName, setUploadedImgName] = useState<string>('');
   const [uploadedImgUrl, setUploadedImgUrl] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [creditLeft, setCreditLeft] = useState<number>(0);
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    async function getUser() {
-      const supabase = createClientComponentClient();
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        console.log(error);
-      } else {
-        setUser(data.user ?? null);
-        const credit = await checkCredit(data.user?.id);
-        console.log(credit);
-        setCreditLeft(credit);
-      }
-      console.log(data.user);
-    }
-    getUser();
-  }, []);
-
-  const getImageUrl = async (imgName: string) => {
-    const { data, error } = await supabase.storage
-      .from('ai_colorize_bucket')
-      .createSignedUrl(imgName, 60);
-
-    if (error) {
-      console.log(error);
-    } else {
-      setUploadedImgUrl(data?.signedUrl || '');
-    }
-  };
+  const { user, credit, setCreditLeft } = useAuth();
 
   const colorizePhoto = async () => {
     console.log(uploadedImgUrl);
@@ -94,11 +65,11 @@ const App = () => {
 
   useEffect(() => {
     const onUpload = async () => {
-      const isCredit = await checkCredit(user?.id || '');
-      console.log(isCredit);
-      setCreditLeft(isCredit);
+      console.log('uid', user?.id);
+      const newCredit = await checkCredit(user?.id || '');
+      console.log(newCredit);
 
-      if (isCredit <= 0) {
+      if (newCredit <= 0) {
         console.log('no credit');
         return;
       }
@@ -119,18 +90,29 @@ const App = () => {
       if (data) {
         console.log(data);
         setUploadedImgName(data.path);
-        getImageUrl(data.path);
+        await supabase.storage
+          .from('ai_colorize_bucket')
+          .createSignedUrl(data.path, 60)
+          .then(({ data }) => {
+            console.log(data?.signedUrl);
+            setUploadedImgUrl(data?.signedUrl || '');
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
         setFile(null);
-        if (creditLeft > 0) {
-          let updateCredit = creditLeft - 1;
+        if (newCredit > 0) {
+          let updateCredit = newCredit - 1;
           decreaseCreditLeft(user?.id || '', updateCredit);
+          setCreditLeft(updateCredit);
         }
       } else {
         console.log(error);
       }
     };
     file && onUpload();
-  }, [file, getImageUrl]);
+  }, [file]);
 
   return (
     <div className='container min-h-[80vh] p-10 mx-auto'>
