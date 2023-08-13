@@ -2,10 +2,15 @@
 import { useState, useEffect } from 'react';
 import { handleDownload } from '@/utils';
 import DropZone from '@/components/DropZone';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import {
+  User,
+  createClientComponentClient,
+} from '@supabase/auth-helpers-nextjs';
 import { Button, Image } from '@nextui-org/react';
 import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
 import { CameraIcon } from '@heroicons/react/20/solid';
+import checkCredit from '@/lib/checkCredit';
+import decreaseCreditLeft from '@/lib/updateCredit';
 
 const App = () => {
   const supabase = createClientComponentClient();
@@ -15,6 +20,25 @@ const App = () => {
   const [uploadedImgName, setUploadedImgName] = useState<string>('');
   const [uploadedImgUrl, setUploadedImgUrl] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [creditLeft, setCreditLeft] = useState<number>(0);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    async function getUser() {
+      const supabase = createClientComponentClient();
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.log(error);
+      } else {
+        setUser(data.user ?? null);
+        const credit = await checkCredit(data.user?.id);
+        console.log(credit);
+        setCreditLeft(credit);
+      }
+      console.log(data.user);
+    }
+    getUser();
+  }, []);
 
   const getImageUrl = async (imgName: string) => {
     const { data, error } = await supabase.storage
@@ -68,14 +92,16 @@ const App = () => {
       });
   };
 
-  // const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   console.log(event.target.files);
-  //   if (!event.target.files) return;
-  //   setFile(event.target.files[0]);
-  // };
-
   useEffect(() => {
     const onUpload = async () => {
+      const isCredit = await checkCredit(user?.id || '');
+      console.log(isCredit);
+      setCreditLeft(isCredit);
+
+      if (isCredit <= 0) {
+        console.log('no credit');
+        return;
+      }
       if (!file) return;
       setUploading(true);
       setGeneratedImg('');
@@ -95,6 +121,10 @@ const App = () => {
         setUploadedImgName(data.path);
         getImageUrl(data.path);
         setFile(null);
+        if (creditLeft > 0) {
+          let updateCredit = creditLeft - 1;
+          decreaseCreditLeft(user?.id || '', updateCredit);
+        }
       } else {
         console.log(error);
       }
