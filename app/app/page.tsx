@@ -71,6 +71,7 @@ const App = () => {
 
       if (newCredit <= 0) {
         console.log('no credit');
+        window.alert('You have no credit left');
         return;
       }
       if (!file) return;
