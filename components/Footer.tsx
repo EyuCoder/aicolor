@@ -12,7 +12,7 @@ const Footer = () => {
         </Link>
       </p>
 
-      <a target='_blank' href='https://github.com/eyucoder'>
+      <a target='_blank' href='https://github.com/eyucoder/aicolor'>
         <svg
           stroke='currentColor'
           fill='currentColor'
