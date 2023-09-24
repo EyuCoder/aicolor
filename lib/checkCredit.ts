@@ -16,7 +16,7 @@ async function checkCredit(uid: string): Promise<number> {
     const { error } = await supabase.from('credit').insert({ uid });
     if (error) throw error;
 
-    return 4;
+    return 30;
   }
 }
 
