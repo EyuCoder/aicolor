@@ -5,6 +5,7 @@ import { Providers } from './context/providers';
 import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import { AuthProvider } from './context/AuthProvider';
+import { Analytics } from '@vercel/analytics/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -28,6 +29,7 @@ export default async function RootLayout({
             <Footer />
           </AuthProvider>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
